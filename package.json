@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/donovanrichardson/deparch/issues"
   },
-  "homepage": "https://github.com/donovanrichardson/deparch#readme"
+  "homepage": "https://github.com/donovanrichardson/deparch#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
