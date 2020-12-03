@@ -6,6 +6,8 @@ const logger = require('morgan');
 require('dotenv').config()
 const cors = require('cors')
 
+const PORT = process.env.PORT || 3001;
+
 const indexRouter = require('./routes/index');
 
 const app = express();
@@ -36,6 +38,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(process.env.PORT || 3001, () => {
+app.listen(PORT, () => {
   console.log(`🌎  now listening on port ${PORT}!`);
 });
