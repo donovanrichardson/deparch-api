@@ -1,0 +1,26 @@
+{
+  "name": "deparch",
+  "version": "0.1.0",
+  "description": "Departure timetables using GTFS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donovanrichardson/deparch.git"
+  },
+  "keywords": [
+    "gtfs",
+    "transit",
+    "departure",
+    "timetable",
+    "transportation"
+  ],
+  "author": "Donovan Richardson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/donovanrichardson/deparch/issues"
+  },
+  "homepage": "https://github.com/donovanrichardson/deparch#readme"
+}
