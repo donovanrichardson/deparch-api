@@ -18,13 +18,21 @@ async function execute(city, query){ //refactor this so that individual methods 
     return result.rows
 }
 
+async function getTZ(dict){
+    const tz = await execute(dict.agency, "select agency_timezone from agency;")
+    console.log(tz[0].agency_timezone)
+    return tz[0]
+}
+
 async function getRoutes(dict){
     const routes = await execute(dict.agency, "select * from routes;")
     console.log(routes);
     return routes
 }
 
-getRoutes({agency:'boston'})
+// getRoutes({agency:'boston'})
+
+getTZ({agency:'boston'})
 
 // if (prepareArray){
 //     preparedQuery = {
