@@ -1,6 +1,8 @@
 const {Client} = require('pg')
 const urls = require('../connections')
+const {DateTime} = require('luxon')
 // console.log(urls);
+const dFormat = 'yyyyLLdd'
 
 async function test(){
     const db = await new Client(urls.boston)
@@ -24,15 +26,22 @@ async function getTZ(dict){
     return tz[0]
 }
 
+function getWeekday(datestring){
+    const dt = DateTime.fromFormat(datestring,dFormat)
+    return dt.weekdayLong.toLowerCase()
+}
+
 async function getRoutes(dict){
-    const routes = await execute(dict.agency, "select * from routes;")
+    const weekday = getWeekday(dict.date)
+    const query = `select routes.route_short_name, routes.route_long_name, routes.route_color, routes.route_text_color from routes;`
+    const routes = await execute(dict.agency, query)
     console.log(routes);
     return routes
 }
 
-// getRoutes({agency:'boston'})
+getRoutes({agency:'boston',date:'20201205'})
 
-getTZ({agency:'boston'})
+// getTZ({agency:'boston'})
 
 // if (prepareArray){
 //     preparedQuery = {
