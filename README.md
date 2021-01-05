@@ -2,6 +2,8 @@
 
 An API that provides departure timetables for transit systems.
 
+Note: `connections/index.js` should probably connect to a mongo db.
+
 <!-- ## Agencies ??? -->
 
 ## /routes
