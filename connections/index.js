@@ -1,5 +1,8 @@
 require('dotenv').config()
 
 module.exports = {
-    boston: process.env.boston || "postgresql://localhost/mbta"
+    boston: {
+        url: process.env.boston || "postgresql://localhost/mbta",
+        name: "MBTA (Boston)"
+    }
 }
