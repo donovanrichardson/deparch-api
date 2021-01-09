@@ -17,10 +17,21 @@ function getWeekday(datestring){
     return dt.weekdayLong.toLowerCase()
 }
 
+exports.getAgencies = (req, res) => {//should get from mongo
+    let keys = Object.keys(agencies);
+    let newAgencies = {}
+    keys.forEach(agency =>{
+        let notUrl = {}
+        let agencyProps = Object.keys(agencies[agency])
+        agencyProps.filter(l=>{
+            return l !== 'url'
+        }).forEach(prop=>{
+            notUrl[prop] = agencies[agency][prop]
+        })
+        newAgencies[agency]= notUrl
+    })
 
-exports.getAgencies = (req, res) => {
-    console.log(agencies) //should get from mongo
-    res.send(agencies)
+    res.send(newAgencies)
 }
 
 exports.getTZ = async (req, res) => {
