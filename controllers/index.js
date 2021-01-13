@@ -34,13 +34,14 @@ exports.getAgencies = (req, res) => {//should get from mongo
     res.send(newAgencies)
 }
 
+//agency
 exports.getTZ = async (req, res) => {
     const tz = await execute(req.query.agency, "select agency_timezone from agency;")
     console.log(tz[0].agency_timezone)
     res.send(tz)
 }
 
-
+//agency date
 exports.getRoutes = async (req, res) => {
     try{
         const weekday = getWeekday(req.query.date)
@@ -55,10 +56,12 @@ exports.getRoutes = async (req, res) => {
     }
 }
 
+//agency date route
 exports.getOrigins = async (req, res) => {
     try{
         const weekday = getWeekday(req.query.date)
-    const query = `select distinct stops.*, calendar.* from stops left join stop_times on stops.stop_id = stop_times.stop_id left join trips on stop_times.trip_id = trips.trip_id  left join calendar on calendar.service_id = trips.service_id left join routes on trips.route_id = routes.route_id where routes.route_id = '${req.query.route}' and ((calendar.${weekday}=1 and ${req.query.date} between calendar.start_date and calendar.end_date and not exists(select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 2)) or exists (select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 1 and date = ${req.query.date})) order by stops.stop_name;`
+    const query = `select distinct stops.*, calendar.* from stops left join stop_times on stops.stop_id = stop_times.stop_id left join trips on stop_times.trip_id = trips.trip_id  left join calendar on calendar.service_id = trips.service_id left join routes on trips.route_id = routes.route_id where routes.route_id = '${req.query.route}' and ((calendar.${weekday}=1 and ${req.query.date} between calendar.start_date and calendar.end_date and not exists(select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 2 and date = ${req.query.date})) or exists (select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 1 and date = ${req.query.date})) order by stops.stop_name;`
+    console.log(query);
     const origins = await execute(req.query.agency, query)
     console.log(origins);
     res.send(origins)}
@@ -69,7 +72,7 @@ exports.getOrigins = async (req, res) => {
 exports.getDests = async (req, res) => {
     try{
         const weekday = getWeekday(req.query.date)
-    const query = `select distinct deststops.*, calendar.* from stops left join stop_times on stops.stop_id = stop_times.stop_id left join trips on stop_times.trip_id = trips.trip_id left join stop_times as desttimes on desttimes.trip_id = trips.trip_id and stop_times.stop_sequence < desttimes.stop_sequence left join stops as deststops on desttimes.stop_id = deststops.stop_id left join calendar on calendar.service_id = trips.service_id left join routes on trips.route_id = routes.route_id where routes.route_id = '${req.query.route}' and stops.stop_id = '${req.query.origin}' and ((calendar.${weekday}=1 and ${req.query.date} between calendar.start_date and calendar.end_date and not exists(select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 2)) or exists (select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 1 and date = ${req.query.date})) order by deststops.stop_name;`
+    const query = `select distinct deststops.*, calendar.* from stops left join stop_times on stops.stop_id = stop_times.stop_id left join trips on stop_times.trip_id = trips.trip_id left join stop_times as desttimes on desttimes.trip_id = trips.trip_id and stop_times.stop_sequence < desttimes.stop_sequence left join stops as deststops on desttimes.stop_id = deststops.stop_id left join calendar on calendar.service_id = trips.service_id left join routes on trips.route_id = routes.route_id where routes.route_id = '${req.query.route}' and stops.stop_id = '${req.query.origin}' and ((calendar.${weekday}=1 and ${req.query.date} between calendar.start_date and calendar.end_date and not exists(select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 2 and date = ${req.query.date})) or exists (select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 1 and date = ${req.query.date})) order by deststops.stop_name;`
     const dests = await execute(req.query.agency, query)
     console.log(dests);
     res.send(dests)}
@@ -81,7 +84,7 @@ exports.getDests = async (req, res) => {
 exports.getTT = async (req, res) => {
     try{
         const weekday = getWeekday(req.query.date)
-    const query = `select distinct stop_times.departure_time,stop_times.departure_timestamp, stops.stop_id, stops.stop_code, stops.stop_name, stops.stop_desc, deststops.stop_id, deststops.stop_code, deststops.stop_name, deststops.stop_desc, routes.route_short_name, routes.route_long_name, routes.route_color, routes.route_text_color, ${req.query.date} as date from stops left join stop_times on stops.stop_id = stop_times.stop_id left join trips on stop_times.trip_id = trips.trip_id left join stop_times as desttimes on desttimes.trip_id = trips.trip_id and stop_times.stop_sequence < desttimes.stop_sequence left join stops as deststops on desttimes.stop_id = deststops.stop_id left join calendar on calendar.service_id = trips.service_id left join routes on trips.route_id = routes.route_id where routes.route_id = '${req.query.route}' and stops.stop_id = '${req.query.origin}' and deststops.stop_id = '${req.query.dest}' and ((calendar.${weekday}=1 and ${req.query.date} between calendar.start_date and calendar.end_date and not exists(select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 2)) or exists (select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 1 and date = ${req.query.date})) order by stop_times.departure_time;`
+    const query = `select distinct stop_times.departure_time,stop_times.departure_timestamp, stops.stop_id, stops.stop_code, stops.stop_name, stops.stop_desc, deststops.stop_id, deststops.stop_code, deststops.stop_name, deststops.stop_desc, routes.route_short_name, routes.route_long_name, routes.route_color, routes.route_text_color, ${req.query.date} as date from stops left join stop_times on stops.stop_id = stop_times.stop_id left join trips on stop_times.trip_id = trips.trip_id left join stop_times as desttimes on desttimes.trip_id = trips.trip_id and stop_times.stop_sequence < desttimes.stop_sequence left join stops as deststops on desttimes.stop_id = deststops.stop_id left join calendar on calendar.service_id = trips.service_id left join routes on trips.route_id = routes.route_id where routes.route_id = '${req.query.route}' and stops.stop_id = '${req.query.origin}' and deststops.stop_id = '${req.query.dest}' and ((calendar.${weekday}=1 and ${req.query.date} between calendar.start_date and calendar.end_date and not exists(select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 2 and date = ${req.query.date})) or exists (select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 1 and date = ${req.query.date})) order by stop_times.departure_time;`
     const timetable = await execute(req.query.agency, query)
     console.log(timetable);
     res.send(timetable)}
