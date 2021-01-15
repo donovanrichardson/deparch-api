@@ -1,10 +1,23 @@
 const {Client} = require('pg')
-const agencies = require('../connections')
+// const agencies = require('../connections')
 const {DateTime} = require('luxon')
 const dFormat = 'yyyyLLdd'
+const mongoose = require('mongoose');
+require('dotenv').config()
+const {Agency} = require('../agency')
+
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+
+async function getUriFromCity(city){
+    const {uri} = await Agency.findOne({key:city})
+    return uri
+}
 
 async function execute(city, query){ //refactor this so that individual methods do the preparedQuery
-    const db = new Client(agencies[city].url)
+    const db = new Client(getUriFromCity(city))
     await db.connect()
     
     const result = await db.query(query);
@@ -17,21 +30,25 @@ function getWeekday(datestring){
     return dt.weekdayLong.toLowerCase()
 }
 
-exports.getAgencies = (req, res) => {//should get from mongo
-    let keys = Object.keys(agencies);
-    let newAgencies = {}
-    keys.forEach(agency =>{
-        let notUrl = {}
-        let agencyProps = Object.keys(agencies[agency])
-        agencyProps.filter(l=>{
-            return l !== 'url'
-        }).forEach(prop=>{
-            notUrl[prop] = agencies[agency][prop]
-        })
-        newAgencies[agency]= notUrl
-    })
+exports.getAgencies = async (req, res) => {//should get from mongo
+    // let keys = Object.keys(agencies);
+    // let newAgencies = {}
+    // keys.forEach(agency =>{
+    //     let notUrl = {}
+    //     let agencyProps = Object.keys(agencies[agency])
+    //     agencyProps.filter(l=>{
+    //         return l !== 'url'
+    //     }).forEach(prop=>{
+    //         notUrl[prop] = agencies[agency][prop]
+    //     })
+    //     newAgencies[agency]= notUrl
+    // })
 
-    res.send(newAgencies)
+    // res.send(newAgencies)
+
+    const agencies = await Agency.find({},{uri:0, _id:0, "__v":0})
+    res.send(agencies)
+
 }
 
 //agency
