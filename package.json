@@ -4,7 +4,7 @@
   "description": "Departure timetables using GTFS",
   "main": "index.js",
   "scripts": {
-    "start":"node .",
+    "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -32,8 +32,12 @@
     "express": "^4.17.1",
     "http-errors": "~1.6.3",
     "luxon": "^1.25.0",
+    "mongoose": "^5.11.12",
     "morgan": "~1.9.1",
     "pg": "^8.5.1",
     "pg-gtfs": "github:donovanrichardson/pg-node-gtfs"
+  },
+  "devDependencies": {
+    "inquirer": "^7.3.3"
   }
 }
