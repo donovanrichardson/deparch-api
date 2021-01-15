@@ -17,7 +17,7 @@ async function getUriFromCity(city){
 }
 
 async function execute(city, query){ //refactor this so that individual methods do the preparedQuery
-    const db = new Client(getUriFromCity(city))
+    const db = new Client(await getUriFromCity(city))
     await db.connect()
     
     const result = await db.query(query);
@@ -46,7 +46,7 @@ exports.getAgencies = async (req, res) => {//should get from mongo
 
     // res.send(newAgencies)
 
-    const agencies = await Agency.find({},{uri:0, _id:0, "__v":0})
+    const agencies = await Agency.find({},{uri:0, _id:0, "__v":0}).sort('name')
     res.send(agencies)
 
 }
