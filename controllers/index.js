@@ -80,7 +80,7 @@ exports.getOrigins = async (req, res) => {
     const query = `select distinct stops.*, calendar.* from stops left join stop_times on stops.stop_id = stop_times.stop_id left join trips on stop_times.trip_id = trips.trip_id  left join calendar on calendar.service_id = trips.service_id left join routes on trips.route_id = routes.route_id where routes.route_id = '${req.query.route}' and ((calendar.${weekday}=1 and ${req.query.date} between calendar.start_date and calendar.end_date and not exists(select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 2 and date = ${req.query.date})) or exists (select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 1 and date = ${req.query.date})) order by stops.stop_name;`
     console.log(query);
     const origins = await execute(req.query.agency, query)
-    console.log(origins);
+    // console.log(origins);
     res.send(origins)}
     catch(err){
         res.status(500).send('error encountered')
@@ -91,7 +91,7 @@ exports.getDests = async (req, res) => {
         const weekday = getWeekday(req.query.date)
     const query = `select distinct deststops.*, calendar.* from stops left join stop_times on stops.stop_id = stop_times.stop_id left join trips on stop_times.trip_id = trips.trip_id left join stop_times as desttimes on desttimes.trip_id = trips.trip_id and stop_times.stop_sequence < desttimes.stop_sequence left join stops as deststops on desttimes.stop_id = deststops.stop_id left join calendar on calendar.service_id = trips.service_id left join routes on trips.route_id = routes.route_id where routes.route_id = '${req.query.route}' and stops.stop_id = '${req.query.origin}' and ((calendar.${weekday}=1 and ${req.query.date} between calendar.start_date and calendar.end_date and not exists(select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 2 and date = ${req.query.date})) or exists (select * from calendar_dates where calendar_dates.service_id = calendar.service_id and calendar_dates.exception_type = 1 and date = ${req.query.date})) order by deststops.stop_name;`
     const dests = await execute(req.query.agency, query)
-    console.log(dests);
+    console.log(query);
     res.send(dests)}
     catch(err){
         res.status(500).send('error encountered')

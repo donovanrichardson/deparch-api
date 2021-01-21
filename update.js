@@ -78,6 +78,7 @@ async function update() {
         }
         
         await currentData.save()
+        console.log(currentData)
     }
     const {doAnother} = await inquirer.prompt({
         type:'confirm',
